@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="apiscol-metadata" version="0.1">
+	<fields>
+		<field name="id" type="string" indexed="true" stored="true"
+			required="true" multiValued="false" />
+		<field name="general.text" type="text_fr" indexed="true" stored="true"
+			required="true" multiValued="true" termVectors="true" termPositions="true"
+			termOffsets="true" />
+		<field name="general.title" type="text_fr" indexed="true"
+			stored="false" required="true" multiValued="false" />
+		<field name="general.language" type="string" indexed="true"
+			stored="true" required="true" multiValued="true" />
+		<field name="general.description" type="text_fr" indexed="true"
+			stored="false" required="true" multiValued="true" />
+		<field name="general.keyword" type="text_fr" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="general.coverage" type="text_fr" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="general.generalresourcetype" type="string" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="lifecycle.status" type="string" indexed="true"
+			stored="false" multiValued="false" required="false" />
+		<field name="technical.format" type="string" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="technical.size" type="tint" indexed="true" stored="true"
+			multiValued="false" required="false"/>
+		<field name="technical.installationremarks" type="text_fr"
+			indexed="true" stored="false" multiValued="false" />
+		<field name="technical.otherplatformrequirements" type="text_fr"
+			indexed="true" stored="false" multiValued="false" />
+		<field name="educational.learningresourcetype" type="string"
+			indexed="true" stored="false" multiValued="true" />
+		<field name="educational.intendedenduserrole" type="string"
+			indexed="true" stored="false" multiValued="true" />
+		<field name="educational.description" type="text_fr" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="educational.context" type="string" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="educational.language" type="string" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="educational.activity" type="string" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="educational.place" type="string" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="educational.educationalmethod" type="string"
+			indexed="true" stored="false" multiValued="true" />
+		<field name="educational.tool" type="string" indexed="true"
+			stored="false" multiValued="true" />
+		<field name="rights.costs" type="boolean" indexed="true" stored="false"
+			multiValued="false" />
+		<field name="rights.copyrightandotherrestrictions" type="boolean"
+			indexed="true" stored="false" multiValued="false" />
+		<field name="rights.description" type="text_fr" indexed="true"
+			stored="false" multiValued="false" />
+		<field name="relation.resource.description" type="text_fr"
+			indexed="true" stored="false" multiValued="true" />
+		<field name="educational.typicallearningtime" type="duration"
+			indexed="true" stored="false" multiValued="false" />
+		<dynamicField name="*-taxon" type="string" indexed="true"
+			stored="true" multiValued="true" />
+		<dynamicField name="lifecycle.contributor.*" type="vcard"
+			indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="metameta.contributor.*" type="vcard"
+			indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="lifecycle.date.*" type="tdate"
+			indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="metameta.date.*" type="tdate"
+			indexed="true" stored="true" multiValued="true" />
+		<field name="suggest" type="suggestion_fr" indexed="true"
+			stored="true" multiValued="true" />
+	</fields>
+
+	<uniqueKey>id</uniqueKey>
+	<copyField source="general.title" dest="general.text" />
+	<copyField source="general.description" dest="general.text" />
+	<copyField source="general.keyword" dest="general.text" />
+	<copyField source="technical.installationremarks" dest="general.text" />
+	<copyField source="educational.description" dest="general.text" />
+	<copyField source="rights.description" dest="general.text" />
+	<copyField source="relation.resource.description" dest="general.text" />
+	<copyField source="general.title" dest="suggest" />
+	<copyField source="general.description" dest="suggest" />
+	<copyField source="general.keyword" dest="suggest" />
+	<copyField source="technical.installationremarks" dest="suggest" />
+	<copyField source="educational.description" dest="suggest" />
+	<copyField source="rights.description" dest="suggest" />
+	<copyField source="relation.resource.description" dest="suggest" />
+
+
+	<types>
+
+		<fieldType name="string" class="solr.StrField"
+			sortMissingLast="true" />
+
+		<fieldType name="vcard" class="solr.TextField"
+			sortMissingLast="false">
+			<analyzer type="index">
+				<tokenizer class="solr.PatternTokenizerFactory" pattern="(FN|F|ORG|TITLE):([^\n]+)"
+					group="2" />
+			</analyzer>
+		</fieldType>
+
+		<fieldType name="boolean" class="solr.BoolField"
+			sortMissingLast="true" />
+
+		<fieldType name="text_fr" class="solr.TextField"
+			positionIncrementGap="100" autoGeneratePhraseQueries="true">
+			<analyzer>
+				<tokenizer class="solr.StandardTokenizerFactory" />
+				<filter class="solr.ElisionFilterFactory" ignoreCase="true"
+					articles="lang/contractions_fr.txt" />
+				<filter class="solr.LowerCaseFilterFactory" />
+				<filter class="solr.StopFilterFactory" ignoreCase="true"
+					words="lang/stopwords_fr.txt" format="snowball"
+					enablePositionIncrements="true" />
+				<filter class="solr.FrenchLightStemFilterFactory" />
+				<!-- less aggressive: <filter class="solr.FrenchMinimalStemFilterFactory"/> -->
+				<!-- more aggressive: <filter class="solr.SnowballPorterFilterFactory" 
+					language="French"/> -->
+			</analyzer>
+		</fieldType>
+		<fieldType name="suggestion_fr" class="solr.TextField"
+			positionIncrementGap="100">
+			<analyzer type="index">
+				<tokenizer class="solr.StandardTokenizerFactory" />
+				<filter class="solr.ElisionFilterFactory" ignoreCase="true"
+					articles="lang/contractions_fr.txt" />
+				<filter class="solr.LowerCaseFilterFactory" />
+				<filter class="solr.RemoveDuplicatesTokenFilterFactory" />
+			</analyzer>
+			<analyzer type="query">
+				<charFilter class="solr.PatternReplaceCharFilterFactory"
+					pattern="(~\d(\.)?(\d)*)|(\*)" replaceWith="" />
+				<tokenizer class="solr.StandardTokenizerFactory" />
+				<filter class="solr.ElisionFilterFactory" ignoreCase="true"
+					articles="lang/contractions_fr.txt" />
+				<filter class="solr.LowerCaseFilterFactory" />
+				<filter class="solr.RemoveDuplicatesTokenFilterFactory" />
+			</analyzer>
+		</fieldType>
+		<fieldType name="tint" class="solr.TrieIntField"
+			precisionStep="0" positionIncrementGap="0" />
+		<fieldType name="tdate" class="solr.TrieDateField"
+			precisionStep="0" positionIncrementGap="0" />
+		<fieldType name="duration" class="solr.TrieDateField"
+			precisionStep="0" positionIncrementGap="0">
+		</fieldType>
+	</types>
+
+</schema>

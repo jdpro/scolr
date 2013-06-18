@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context docBase="/home/solr/solr-4.2.1.war" path="/solr" 
+					debug="0" crossContext="true">
+		<Valve className="org.apache.catalina.valves.RemoteAddrValve"
+						allow="127.0.0.1" /> 
+		<Environment name="solr/home" type="java.lang.String"
+						value="/home/solr/solr" override="true" />
+</Context>

@@ -1,0 +1,14 @@
+.project
+.metadata
+logs/**
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+.classpath
+.settings/
+*.launch
+solr/metadata/metadata-data
+solr/resources/resources-data
